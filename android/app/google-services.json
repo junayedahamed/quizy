@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "17897348329",
+    "project_id": "quizy-5c4d4",
+    "storage_bucket": "quizy-5c4d4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:17897348329:android:6ee180086e5e87e8a3a478",
+        "android_client_info": {
+          "package_name": "com.example.quizy"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-OdzSq-dquACl507MQjocMoAK1e5x3Rw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
