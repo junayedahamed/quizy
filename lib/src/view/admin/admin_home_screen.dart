@@ -1,11 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:quizy/src/theme/theme.dart';
-import 'package:quizy/src/view/admin/widgets/category_data_listview.dart';
 import 'package:quizy/src/view/admin/widgets/category_stats_design.dart';
 import 'package:quizy/src/view/admin/widgets/quiz_action_card.dart';
-import 'package:quizy/src/view/admin/widgets/quiz_data_listview.dart';
 import 'package:quizy/src/view/admin/widgets/stat_cards.dart';
+import 'package:quizy/src/view/loading_skeleton/admin_dash_board_skeleton.dart';
 
 class AdminHomeScreen extends StatefulWidget {
   const AdminHomeScreen({super.key});
@@ -73,13 +72,14 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
         future: _fetchStatistics(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return Center(child: AdminDashBoardSkeleton());
           } else if (snapshot.hasData) {
             final Map<String, dynamic> stats = snapshot.data!;
             final List<dynamic> categoryData = stats['categoryData'];
             final List<QueryDocumentSnapshot> latestQuizez =
                 stats['latestQuizez'];
             return SingleChildScrollView(
+              physics: BouncingScrollPhysics(),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

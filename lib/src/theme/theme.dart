@@ -10,6 +10,7 @@ class AppTheme {
   static final Color textPrimaryColor = Color(0xFF2D3748);
   static final Color textSecondaryColor = Color(0xFF718096);
   static final Color cardColor = Colors.white;
+  static final Color skeletonColor = Colors.grey;
   static ThemeData get theme {
     return ThemeData(
       primaryColor: primaryColor,

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:quizy/src/view/admin/manage_categories.dart';
+import 'package:quizy/src/view/admin/manage_qizzes.dart';
 import 'package:quizy/src/view/admin/widgets/dash_board_card.dart';
 
 class QuizActionGridview extends StatelessWidget {
@@ -21,13 +23,23 @@ class QuizActionGridview extends StatelessWidget {
           icon: Icons.add_rounded,
         ),
         DashBoardCard(
-          title: 'Manage Quizes',
-          ontap: () {},
+          title: 'Manage Quizzes',
+          ontap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ManageQizzes()),
+            );
+          },
           icon: Icons.quiz_rounded,
         ),
         DashBoardCard(
           title: 'Manage Categories',
-          ontap: () {},
+          ontap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ManageCategories()),
+            );
+          },
           icon: Icons.category_rounded,
         ),
       ],
