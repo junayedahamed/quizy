@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:quizy/firebase_options.dart';
 import 'package:quizy/src/theme/theme.dart';
 import 'package:quizy/src/view/admin/admin_home_screen.dart';
-import 'package:quizy/src/view/loading_skeleton/admin_dash_board_skeleton.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

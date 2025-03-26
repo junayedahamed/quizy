@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:quizy/src/theme/theme.dart';
 
 class ManageQizzes extends StatefulWidget {
-  const ManageQizzes({super.key});
+  final String? categoryId;
+  const ManageQizzes({super.key, this.categoryId});
 
   @override
   State<ManageQizzes> createState() => _ManageQizzesState();

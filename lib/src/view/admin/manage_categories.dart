@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:quizy/src/model/category.dart';
 import 'package:quizy/src/theme/theme.dart';
+import 'package:quizy/src/view/admin/manage_qizzes.dart';
 import 'package:quizy/src/view/admin/widgets/categories_popup_menu.dart';
 import 'package:quizy/src/view/loading_skeleton/listtile_skeleton.dart';
 
@@ -14,17 +15,55 @@ class ManageCategories extends StatefulWidget {
 
 class _ManageCategoriesState extends State<ManageCategories> {
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
+
   Future<void> _handleCategoryAction(
     BuildContext context,
     String action,
     Category categoty,
   ) async {
     if (action == 'edit') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ManageQizzes(categoryId: categoty.id),
+        ),
+      );
     } else if (action == 'delete') {
-      await _firebaseFirestore
-          .collection('categories')
-          .doc(categoty.id)
-          .delete();
+      // await _firebaseFirestore
+      //     .collection('categories')
+      //     .doc(categoty.id)
+      //     .delete();
+      final confirm = await showDialog<bool>(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Delete Category"),
+            content: Text("Are you sure you want to delete this category?"),
+
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context, false);
+                },
+                child: Text("Cancel"),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context, true);
+                },
+                child: Text("Confrim"),
+              ),
+            ],
+          );
+        },
+      );
+
+      if (confirm == true) {
+        await _firebaseFirestore
+            .collection('categories')
+            .doc(categoty.id)
+            .delete();
+      }
     }
   }
 
