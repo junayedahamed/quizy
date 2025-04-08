@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:quizy/src/model/category.dart';
 import 'package:quizy/src/model/quiz.dart';
 import 'package:quizy/src/theme/theme.dart';
+import 'package:quizy/src/view/admin/add_category_screen.dart';
 
 class ManageQizzes extends StatefulWidget {
   final String? categoryId;
@@ -67,31 +68,31 @@ class _ManageQizzesState extends State<ManageQizzes> {
     return query.snapshots();
   }
 
-  Widget _buildTile() {
-    String? categoryId = _selectedCategoryId ?? widget.categoryId;
+  // Widget _buildTile() {
+  //   String? categoryId = _selectedCategoryId ?? widget.categoryId;
 
-    if (categoryId == null) {
-      return Text("All Quizzes", style: TextStyle(fontWeight: FontWeight.bold));
-    }
-    return StreamBuilder<DocumentSnapshot>(
-      stream: _firestore.collection('categories').doc().snapshots(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return Text("Loading");
-        }
+  //   if (categoryId == null) {
+  //     return Text("All Quizzes", style: TextStyle(fontWeight: FontWeight.bold));
+  //   }
+  //   return StreamBuilder<DocumentSnapshot>(
+  //     stream: _firestore.collection('categories').doc().snapshots(),
+  //     builder: (context, snapshot) {
+  //       if (snapshot.hasData) {
+  //         return Text("Loading");
+  //       }
 
-        final category = Category.fromMap(
-          categoryId,
-          snapshot.data!.data() as Map<String, dynamic>,
-        );
+  //       final category = Category.fromMap(
+  //         categoryId,
+  //         snapshot.data!.data() as Map<String, dynamic>,
+  //       );
 
-        return Text(
-          category.name,
-          style: TextStyle(fontWeight: FontWeight.bold),
-        );
-      },
-    );
-  }
+  //       return Text(
+  //         category.name,
+  //         style: TextStyle(fontWeight: FontWeight.bold),
+  //       );
+  //     },
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -246,9 +247,55 @@ class _ManageQizzesState extends State<ManageQizzes> {
                             fontSize: 16,
                           ),
                         ),
-                        //TODO
-                        // subtitle:  Text(quiz.),
-                        trailing: Icon(Icons.arrow_forward_ios),
+
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(height: 8),
+                            Row(
+                              children: [
+                                Icon(Icons.question_answer_outlined, size: 16),
+                                SizedBox(width: 4),
+                                Text("${quiz.question.length} questions"),
+                                SizedBox(width: 16),
+                                Icon(Icons.timer_outlined, size: 16),
+                                SizedBox(width: 4),
+                                Text("${quiz.timeLimit} minitues"),
+                              ],
+                            ),
+                          ],
+                        ),
+                        trailing: PopupMenuButton(
+                          itemBuilder: (context) {
+                            return [
+                              PopupMenuItem(
+                                value: 'edit',
+                                child: ListTile(
+                                  contentPadding: EdgeInsets.zero,
+                                  leading: Icon(
+                                    Icons.edit,
+                                    color: AppTheme.primaryColor,
+                                  ),
+                                  title: Text("Edit"),
+                                ),
+                              ),
+                              PopupMenuItem(
+                                value: 'delete',
+                                child: ListTile(
+                                  contentPadding: EdgeInsets.zero,
+                                  leading: Icon(
+                                    Icons.delete,
+                                    color: AppTheme.primaryColor,
+                                  ),
+                                  title: Text("Delete"),
+                                ),
+                              ),
+                            ];
+                          },
+                          onSelected: (value) {
+                            _handleQuizAction(context, value, quiz);
+                          },
+                        ),
                       ),
                     );
                   },
@@ -261,5 +308,46 @@ class _ManageQizzesState extends State<ManageQizzes> {
         ],
       ),
     );
+  }
+
+  Future<void> _handleQuizAction(
+    BuildContext context,
+    String value,
+    Quiz quiz,
+  ) async {
+    if (value == 'edit') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => AddCategoryScreen()),
+      );
+    }
+    if (value == 'delete') {
+      final confirm = await showDialog<bool>(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Delete Quiz"),
+            content: Text("Are you sure you want to delete this quiz?"),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context, false);
+                },
+                child: Text("Cancel"),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context, true);
+                },
+                child: Text("Confirm"),
+              ),
+            ],
+          );
+        },
+      );
+      if (confirm == true) {
+        await _firestore.collection('quizzes').doc(quiz.id).delete();
+      }
+    }
   }
 }

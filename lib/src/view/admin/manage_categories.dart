@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:quizy/src/model/category.dart';
 import 'package:quizy/src/theme/theme.dart';
+import 'package:quizy/src/view/admin/add_category_screen.dart';
 import 'package:quizy/src/view/admin/manage_qizzes.dart';
 import 'package:quizy/src/view/admin/widgets/categories_popup_menu.dart';
 import 'package:quizy/src/view/loading_skeleton/listtile_skeleton.dart';
@@ -78,7 +79,10 @@ class _ManageCategoriesState extends State<ManageCategories> {
         actions: [
           IconButton(
             onPressed: () {
-              // Navigator.push(context, MaterialPageRoute(builder: (context) => AddQuizScreen(),))
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AddCategoryScreen()),
+              );
             },
             icon: Icon(Icons.add_circle_outline, color: AppTheme.primaryColor),
           ),
@@ -135,7 +139,17 @@ class _ManageCategoriesState extends State<ManageCategories> {
                     ),
                   ),
                   SizedBox(height: 15),
-                  ElevatedButton(onPressed: () {}, child: Text("Add Category")),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AddCategoryScreen(),
+                        ),
+                      );
+                    },
+                    child: Text("Add Category"),
+                  ),
                 ],
               ),
             );
