@@ -5,6 +5,7 @@ import 'package:quizy/src/view/admin/widgets/category_stats_design.dart';
 import 'package:quizy/src/view/admin/widgets/quiz_action_card.dart';
 import 'package:quizy/src/view/admin/widgets/stat_cards.dart';
 import 'package:quizy/src/view/loading_skeleton/admin_dash_board_skeleton.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class AdminHomeScreen extends StatefulWidget {
   const AdminHomeScreen({super.key});

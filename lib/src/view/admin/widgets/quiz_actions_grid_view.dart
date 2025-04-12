@@ -17,13 +17,18 @@ class QuizActionGridview extends StatelessWidget {
       crossAxisSpacing: 16,
 
       children: [
+        // DashBoardCard(
+        //   title: 'Quizzes',
+        //   ontap: () {
+        //     Navigator.push(
+        //       context,
+        //       MaterialPageRoute(builder: (context) => ManageQizzes()),
+        //     );
+        //   },
+        //   icon: Icons.quiz_rounded,
+        // ),
         DashBoardCard(
-          title: 'Create Quiz',
-          ontap: () {},
-          icon: Icons.add_rounded,
-        ),
-        DashBoardCard(
-          title: 'Manage Quizzes',
+          title: 'Quizzes',
           ontap: () {
             Navigator.push(
               context,
@@ -33,7 +38,7 @@ class QuizActionGridview extends StatelessWidget {
           icon: Icons.quiz_rounded,
         ),
         DashBoardCard(
-          title: 'Manage Categories',
+          title: 'Categories',
           ontap: () {
             Navigator.push(
               context,

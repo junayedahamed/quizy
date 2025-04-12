@@ -6,7 +6,9 @@ class ListtileSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Skeleton.leaf(
+    return Skeletonizer(
+      enabled: true,
+      effect: ShimmerEffect(duration: Duration(seconds: 1)),
       child: Card(
         elevation: 5,
 

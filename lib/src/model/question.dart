@@ -11,7 +11,7 @@ class Question {
   factory Question.fromMap(Map<String, dynamic> question) {
     return Question(
       text: question['text'] ?? "",
-      options: question['options'] ?? [],
+      options: (question['options'] as List?)?.cast() ?? [],
       correctIndex: question['correctIndex'] ?? 0,
     );
   }

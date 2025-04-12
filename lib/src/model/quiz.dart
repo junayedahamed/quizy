@@ -18,7 +18,7 @@ class Quiz {
   factory Quiz.fromMap(String id, Map<String, dynamic> data) {
     return Quiz(
       id: id,
-      title: data[' title'],
+      title: data['title'],
       categoryId: data['categoryId'],
       question:
           ((data['question'] ?? []) as List)

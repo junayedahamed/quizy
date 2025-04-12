@@ -6,6 +6,7 @@ import 'package:quizy/src/model/category.dart';
 import 'package:quizy/src/model/quiz.dart';
 import 'package:quizy/src/theme/theme.dart';
 import 'package:quizy/src/view/admin/add_category_screen.dart';
+import 'package:quizy/src/view/admin/add_quiz_screen.dart';
 
 class ManageQizzes extends StatefulWidget {
   final String? categoryId;
@@ -96,6 +97,7 @@ class _ManageQizzesState extends State<ManageQizzes> {
 
   @override
   Widget build(BuildContext context) {
+    var initialCategory = _initialCategory;
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -104,7 +106,15 @@ class _ManageQizzesState extends State<ManageQizzes> {
         ),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder:
+                      (context) => AddQuizScreen(categoryId: widget.categoryId),
+                ),
+              );
+            },
             icon: Icon(Icons.add_circle_outline, color: AppTheme.primaryColor),
           ),
         ],
@@ -135,33 +145,45 @@ class _ManageQizzesState extends State<ManageQizzes> {
 
           Padding(
             padding: EdgeInsets.all(12),
-            child: DropdownButtonFormField<String>(
-              decoration: InputDecoration(
-                fillColor: Colors.white,
-                contentPadding: EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 18,
-                ),
-                hintText: 'Category',
-              ),
-              value: _selectedCategoryId,
-              items: [
-                DropdownMenuItem(value: null, child: Text('All Categories')),
-
-                if (_initialCategory != null &&
-                    _category.every((c) => c.id != _initialCategory!.id))
-                  DropdownMenuItem(
-                    value: _initialCategory!.id,
-                    child: Text(_initialCategory!.name),
+            child: Builder(
+              builder: (context) {
+                if (initialCategory == null) {
+                  return SizedBox();
+                }
+                return DropdownButtonFormField<String>(
+                  decoration: InputDecoration(
+                    fillColor: Colors.white,
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 18,
+                    ),
+                    hintText: 'Category',
                   ),
-                ..._category.map((e) {
-                  return DropdownMenuItem(value: e.id, child: Text(e.name));
-                }),
-              ],
-              onChanged: (value) {
-                setState(() {
-                  _selectedCategoryId = value;
-                });
+                  value: _selectedCategoryId,
+                  items: [
+                    if (_category.every((c) => c.id != initialCategory.id))
+                      DropdownMenuItem(
+                        value: initialCategory.id,
+                        child: Text(initialCategory.name),
+                      ),
+                    ..._category.map((e) {
+                      return DropdownMenuItem(
+                        value: e.id.toString(),
+                        child: Text(e.name),
+                      );
+                    }),
+                    DropdownMenuItem(
+                      value: 'all',
+                      child: Text('All Categories'),
+                    ),
+                  ],
+                  onChanged: (value) {
+                    print(value);
+                    setState(() {
+                      _selectedCategoryId = value;
+                    });
+                  },
+                );
               },
             ),
           ),
@@ -214,7 +236,17 @@ class _ManageQizzesState extends State<ManageQizzes> {
                         ),
                         SizedBox(height: 8),
                         ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) => AddQuizScreen(
+                                      categoryId: widget.categoryId,
+                                    ),
+                              ),
+                            );
+                          },
                           child: Text("Add Quiz"),
                         ),
                       ],
@@ -260,7 +292,7 @@ class _ManageQizzesState extends State<ManageQizzes> {
                                 SizedBox(width: 16),
                                 Icon(Icons.timer_outlined, size: 16),
                                 SizedBox(width: 4),
-                                Text("${quiz.timeLimit} minitues"),
+                                Text("${quiz.timeLimit} min"),
                               ],
                             ),
                           ],

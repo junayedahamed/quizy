@@ -197,7 +197,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
 
                     validator:
                         (value) =>
-                            value!.isEmpty ? "Enter  Description name" : null,
+                            value!.isEmpty ? "Enter  Description " : null,
                     textInputAction: TextInputAction.next,
                   ),
 
