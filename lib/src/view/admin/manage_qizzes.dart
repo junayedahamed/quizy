@@ -7,10 +7,12 @@ import 'package:quizy/src/model/quiz.dart';
 import 'package:quizy/src/theme/theme.dart';
 import 'package:quizy/src/view/admin/add_category_screen.dart';
 import 'package:quizy/src/view/admin/add_quiz_screen.dart';
+import 'package:quizy/src/view/admin/edit_quiz_screen.dart';
 
 class ManageQizzes extends StatefulWidget {
   final String? categoryId;
-  const ManageQizzes({super.key, this.categoryId});
+  final String? categoryName;
+  const ManageQizzes({super.key, this.categoryId, this.categoryName});
 
   @override
   State<ManageQizzes> createState() => _ManageQizzesState();
@@ -111,7 +113,10 @@ class _ManageQizzesState extends State<ManageQizzes> {
                 context,
                 MaterialPageRoute(
                   builder:
-                      (context) => AddQuizScreen(categoryId: widget.categoryId),
+                      (context) => AddQuizScreen(
+                        categoryId: widget.categoryId,
+                        categoryName: widget.categoryName,
+                      ),
                 ),
               );
             },
@@ -243,6 +248,7 @@ class _ManageQizzesState extends State<ManageQizzes> {
                                 builder:
                                     (context) => AddQuizScreen(
                                       categoryId: widget.categoryId,
+                                      categoryName: widget.categoryName,
                                     ),
                               ),
                             );
@@ -350,7 +356,7 @@ class _ManageQizzesState extends State<ManageQizzes> {
     if (value == 'edit') {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => AddCategoryScreen()),
+        MaterialPageRoute(builder: (context) => EditQuizScreen(quiz: quiz)),
       );
     }
     if (value == 'delete') {

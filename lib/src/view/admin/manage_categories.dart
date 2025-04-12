@@ -26,7 +26,11 @@ class _ManageCategoriesState extends State<ManageCategories> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ManageQizzes(categoryId: categoty.id),
+          builder:
+              (context) => ManageQizzes(
+                categoryId: categoty.id,
+                categoryName: categoty.name,
+              ),
         ),
       );
     } else if (action == 'delete') {

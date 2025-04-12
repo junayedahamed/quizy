@@ -9,7 +9,8 @@ import 'package:quizy/src/view/admin/widgets/question_form_item.dart';
 
 class AddQuizScreen extends StatefulWidget {
   final String? categoryId;
-  const AddQuizScreen({super.key, this.categoryId});
+  final String? categoryName;
+  const AddQuizScreen({super.key, this.categoryId, this.categoryName});
 
   @override
   State<AddQuizScreen> createState() => _AddQuizQuestionState();
@@ -69,7 +70,9 @@ class _AddQuizQuestionState extends State<AddQuizScreen> {
       ).showSnackBar(SnackBar(content: Text("Please select a Category")));
       return;
     }
-    _isLoading = true;
+    setState(() {
+      _isLoading = true;
+    });
 
     try {
       final question =
@@ -132,7 +135,17 @@ class _AddQuizQuestionState extends State<AddQuizScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppTheme.backGroundColor,
-        title: Text("Add Quiz Question"),
+        title: Text(
+          widget.categoryName != null
+              ? 'Add ${widget.categoryName} Quiz'
+              : "Add Quiz Question",
+        ),
+        actions: [
+          IconButton(
+            onPressed: _isLoading ? null : _saveQuiz,
+            icon: Icon(Icons.save, color: AppTheme.primaryColor),
+          ),
+        ],
       ),
       body: Form(
         key: _formkey,
