@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:quizy/src/model/category.dart';
+//import 'package:quizy/src/theme/app_theme.dart';
+import 'package:quizy/src/theme/theme.dart'; // Assuming AppTheme is defined in your project
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -19,20 +21,19 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _fetchCategoroes();
+    _fetchCategories();
   }
 
-  Future<void> _fetchCategoroes() async {
-    final snapshpot =
-        await FirebaseFirestore.instance
-            .collection('categories')
-            .orderBy('createdAt', descending: true)
-            .get();
+  Future<void> _fetchCategories() async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('categories')
+        .orderBy('createdAt', descending: true)
+        .get();
+
     setState(() {
-      _allCategories =
-          snapshpot.docs
-              .map((doc) => Category.fromMap(doc.id, doc.data()))
-              .toList();
+      _allCategories = snapshot.docs
+          .map((doc) => Category.fromMap(doc.id, doc.data()))
+          .toList();
 
       _categoryfilters =
           ['All'] + _allCategories.map((category) => category.name).toList();
@@ -41,25 +42,123 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void _filteredCategory(String query, {String? categoryfilter}) {
+  void _filterCategories(String query, {String? categoryfilter}) {
     setState(() {
-      _filteredCategories =
-          _allCategories.where((categry) {
-            final matchedSearch =
-                categry.name.toLowerCase().contains(query.toLowerCase()) ||
-                categry.description.toLowerCase().contains(query.toLowerCase());
+      _filteredCategories = _allCategories.where((category) {
+        final matchedSearch = category.name.toLowerCase().contains(query.toLowerCase()) ||
+            category.description.toLowerCase().contains(query.toLowerCase());
 
-            final matchesCategory =
-                categoryfilter == null ||
-                categoryfilter == 'All' ||
-                categry.name.toLowerCase() == categoryfilter.toLowerCase();
-            return matchedSearch && matchesCategory;
-          }).toList();
+        final matchesCategory = categoryfilter == null ||
+            categoryfilter == 'All' ||
+            category.name.toLowerCase() == categoryfilter.toLowerCase();
+
+        return matchedSearch && matchesCategory;
+      }).toList();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Scaffold(
+      backgroundColor: AppTheme.backGroundColor,
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 225,
+            pinned: true,
+            floating: true,
+            centerTitle: true,
+            backgroundColor: AppTheme.primaryColor,
+            elevation: 0,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(20),
+                bottomRight: Radius.circular(20),
+              ),
+            ),
+            title: const Text(
+              "Smart Quiz",
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            flexibleSpace: FlexibleSpaceBar(
+              background: SafeArea(
+                child: Column(
+                  children: [
+                    const SizedBox(height: 20),
+                    Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "Welcome, Learner",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          const Text(
+                            "Let's Test Your knowledge today",
+                            style: TextStyle(
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: Colors.black26,
+                                  blurRadius: 4,
+                                  offset: Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: TextField(
+                              controller: _searchController,
+                              onChanged: (value) => _filterCategories(value),
+                              decoration: InputDecoration(
+                                hintText: "Search category",
+                                prefixIcon: Icon(
+                                  Icons.search,
+                                  color: AppTheme.primaryColor,
+                                ),
+                                suffixIcon: IconButton(
+                                  onPressed: () {
+                                    _searchController.clear();
+                                    _filterCategories('');
+                                  },
+                                  icon: Icon(Icons.clear),
+                                  color: AppTheme.primaryColor,
+                                ),
+                                border: InputBorder.none,
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 12,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
