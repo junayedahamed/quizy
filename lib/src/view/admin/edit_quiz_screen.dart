@@ -68,7 +68,7 @@ class _EditQuizScreenState extends State<EditQuizScreen> {
     });
   }
 
-  void removeQuestion(int index) {
+  void _removeQuestion(int index) {
     if (_questionsItems.length > 1) {
       setState(() {
         _questionsItems[index].dispose();
@@ -108,12 +108,13 @@ class _EditQuizScreenState extends State<EditQuizScreen> {
 
         timeLimit: int.tryParse(_timeLimitController.text),
         question: question,
+        createdAt: widget.quiz.createdAt,
       );
 
       await _firebaseFirestore
           .collection('quizzes')
           .doc(widget.quiz.id)
-          .update(updateQuiz.toMap());
+          .update(updateQuiz.toMap(isUpdate: true));
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -155,7 +156,227 @@ class _EditQuizScreenState extends State<EditQuizScreen> {
           ),
         ],
       ),
-      body: Form(key: _formkey, child: ListView()),
+      body: Form(
+        key: _formkey,
+        child: ListView(
+          padding: EdgeInsets.all(20),
+          children: [
+            Text(
+              "Quiz Details",
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: AppTheme.textPrimaryColor,
+              ),
+            ),
+            SizedBox(height: 20),
+            TextFormField(
+              controller: _titleController,
+              decoration: InputDecoration(
+                fillColor: Colors.white,
+                contentPadding: EdgeInsets.symmetric(vertical: 20),
+                labelText: 'Quiz Title',
+                hintText: 'Enter Quiz Title',
+                prefixIcon: Icon(Icons.title, color: AppTheme.primaryColor),
+              ),
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return 'Please enter quiz title';
+                }
+                return null;
+              },
+            ),
+            SizedBox(height: 20),
+            TextFormField(
+              controller: _timeLimitController,
+              decoration: InputDecoration(
+                fillColor: Colors.white,
+                contentPadding: EdgeInsets.symmetric(vertical: 20),
+                labelText: 'Time Limit (In Minitues)',
+                hintText: 'Enter time Limit',
+                prefixIcon: Icon(Icons.timer, color: AppTheme.primaryColor),
+              ),
+              keyboardType: TextInputType.number,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Enter time limit';
+                }
+                final time = int.tryParse(value);
+                if (time == null || time < 0) {
+                  return 'Enter valid time limit';
+                }
+                return null;
+              },
+            ),
+            SizedBox(height: 16),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Questions',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.primaryColor,
+                      ),
+                    ),
+
+                    ElevatedButton.icon(
+                      onPressed: _addQuestion,
+                      label: Text('Add Question'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppTheme.primaryColor,
+                        foregroundColor: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+                ..._questionsItems.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final QuestionFormItem question = entry.value;
+                  return Card(
+                    margin: EdgeInsets.only(bottom: 16),
+                    child: Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Question ${index + 1}",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppTheme.textPrimaryColor,
+                                ),
+                              ),
+                              if (_questionsItems.length > 1)
+                                IconButton(
+                                  onPressed: () {
+                                    _removeQuestion(index);
+                                  },
+                                  icon: Icon(
+                                    Icons.delete,
+                                    color: Colors.redAccent,
+                                  ),
+                                ),
+                            ],
+                          ),
+
+                          SizedBox(height: 16),
+                          TextFormField(
+                            controller: question.questionController,
+                            decoration: InputDecoration(
+                              labelText: 'Question Title',
+                              hintText: 'Enter Question',
+                              prefixIcon: Icon(
+                                Icons.question_mark,
+                                color: AppTheme.primaryColor,
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Enter valid Question';
+                              }
+                              return null;
+                            },
+                          ),
+
+                          SizedBox(height: 16),
+                          ...question.optionsController.asMap().entries.map((
+                            option,
+                          ) {
+                            final optionIndex = option.key;
+                            final controller = option.value;
+                            // return TextFormField(
+                            //   controller: controller,
+                            //   decoration: InputDecoration(
+                            //     labelText: 'Option ${index + 1}',
+                            //     hintText: 'Enter option',
+                            //     prefixIcon: Icon(
+                            //       Icons.check_circle,
+                            //       color: AppTheme.primaryColor,
+                            //     ),
+                            //   ),
+                            //   validator: (value) {
+                            //     if (value == null || value.isEmpty) {
+                            //       return 'Please enter option';
+                            //     }
+                            //     return null;
+                            //   },
+                            // );
+
+                            return Padding(
+                              padding: EdgeInsets.only(bottom: 8),
+                              child: Row(
+                                children: [
+                                  Radio<int>(
+                                    activeColor: AppTheme.primaryColor,
+                                    value: optionIndex,
+                                    groupValue: question.correctOptinIndex,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        question.correctOptinIndex = value!;
+                                      });
+                                    },
+                                  ),
+                                  Expanded(
+                                    child: TextFormField(
+                                      controller: controller,
+                                      decoration: InputDecoration(
+                                        labelText: 'Option ${optionIndex + 1}',
+                                        hintText: 'Enter option',
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }),
+                        ],
+                      ),
+                    ),
+                  );
+                }),
+
+                SizedBox(height: 32),
+
+                Center(
+                  child: SizedBox(
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: _isLoading ? null : _updateQuiz,
+                      child:
+                          _isLoading
+                              ? SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    Colors.white,
+                                  ),
+                                  strokeWidth: 2,
+                                ),
+                              )
+                              : Text(
+                                "Update Quiz",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
