@@ -28,7 +28,7 @@ class _QuizPlayScreenState extends State<QuizPlayScreen>
     _remainingMin = _totalMiniutes;
     _remainingSeconds = 0;
     _startTimer();
-    _comPleteQuiz();
+    // _comPleteQuiz();
   }
 
   void _startTimer() {
