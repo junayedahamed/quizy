@@ -2,7 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:quizy/src/model/category.dart';
 //import 'package:quizy/src/theme/app_theme.dart';
-import 'package:quizy/src/theme/theme.dart'; // Assuming AppTheme is defined in your project
+import 'package:quizy/src/theme/theme.dart';
+import 'package:quizy/src/view/user/widgets/build_category_card.dart'; // Assuming AppTheme is defined in your project
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -25,15 +26,17 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _fetchCategories() async {
-    final snapshot = await FirebaseFirestore.instance
-        .collection('categories')
-        .orderBy('createdAt', descending: true)
-        .get();
+    final snapshot =
+        await FirebaseFirestore.instance
+            .collection('categories')
+            .orderBy('createdAt', descending: true)
+            .get();
 
     setState(() {
-      _allCategories = snapshot.docs
-          .map((doc) => Category.fromMap(doc.id, doc.data()))
-          .toList();
+      _allCategories =
+          snapshot.docs
+              .map((doc) => Category.fromMap(doc.id, doc.data()))
+              .toList();
 
       _categoryfilters =
           ['All'] + _allCategories.map((category) => category.name).toList();
@@ -44,16 +47,21 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _filterCategories(String query, {String? categoryfilter}) {
     setState(() {
-      _filteredCategories = _allCategories.where((category) {
-        final matchedSearch = category.name.toLowerCase().contains(query.toLowerCase()) ||
-            category.description.toLowerCase().contains(query.toLowerCase());
+      _filteredCategories =
+          _allCategories.where((category) {
+            final matchedSearch =
+                category.name.toLowerCase().contains(query.toLowerCase()) ||
+                category.description.toLowerCase().contains(
+                  query.toLowerCase(),
+                );
 
-        final matchesCategory = categoryfilter == null ||
-            categoryfilter == 'All' ||
-            category.name.toLowerCase() == categoryfilter.toLowerCase();
+            final matchesCategory =
+                categoryfilter == null ||
+                categoryfilter == 'All' ||
+                category.name.toLowerCase() == categoryfilter.toLowerCase();
 
-        return matchedSearch && matchesCategory;
-      }).toList();
+            return matchedSearch && matchesCategory;
+          }).toList();
     });
   }
 
@@ -64,10 +72,10 @@ class _HomeScreenState extends State<HomeScreen> {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            expandedHeight: 225,
+            expandedHeight: 238,
             pinned: true,
             floating: true,
-            centerTitle: true,
+            centerTitle: false,
             backgroundColor: AppTheme.primaryColor,
             elevation: 0,
             shape: const RoundedRectangleBorder(
@@ -155,7 +163,72 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
+              collapseMode: CollapseMode.pin,
             ),
+          ),
+
+          SliverToBoxAdapter(
+            child: Container(
+              margin: EdgeInsets.all(16),
+              height: 40,
+              child: ListView.builder(
+                itemCount: _categoryfilters.length,
+                itemBuilder: (context, index) {
+                  final filter = _categoryfilters[index];
+                  return Padding(
+                    padding: EdgeInsets.only(right: 8),
+                    child: ChoiceChip(
+                      backgroundColor: Colors.white,
+                      label: Text(
+                        filter,
+                        style: TextStyle(
+                          color:
+                              _selectedFilter == filter
+                                  ? Colors.white
+                                  : AppTheme.textPrimaryColor,
+                        ),
+                      ),
+                      selected: _selectedFilter == filter,
+                      onSelected: (value) {
+                        setState(() {
+                          _selectedFilter = filter;
+                          _filterCategories(
+                            _searchController.text,
+                            categoryfilter: filter,
+                          );
+                        });
+                      },
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+          SliverPadding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            sliver:
+                _filteredCategories.isEmpty
+                    ? SliverToBoxAdapter(
+                      child: Text(
+                        "No categories found",
+                        style: TextStyle(color: AppTheme.secondaryColor),
+                      ),
+                    )
+                    : SliverGrid(
+                      delegate: SliverChildBuilderDelegate(
+                        childCount: _filteredCategories.length,
+                        (context, index) => BuildCategoryCard(
+                          category: _filteredCategories[index],
+                          index: index,
+                        ),
+                      ),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 16,
+                        crossAxisSpacing: 16,
+                        childAspectRatio: 0.8,
+                      ),
+                    ),
           ),
         ],
       ),
