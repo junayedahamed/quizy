@@ -16,6 +16,8 @@ class Question {
     );
   }
 
+  Object get correctOptionIndex => null;
+
   Map<String, dynamic> toMap() {
     return {'text': text, 'options': options, ' correctIndex': correctIndex};
   }

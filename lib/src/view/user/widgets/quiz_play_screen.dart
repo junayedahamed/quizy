@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:quizy/src/model/question.dart';
 import 'package:quizy/src/model/quiz.dart';
 import 'package:quizy/src/theme/theme.dart';
@@ -213,7 +214,7 @@ class _QuizPlayScreenState extends State<QuizPlayScreen>
                 },
                 itemBuilder: (context, index) {
                   final question = widget.quiz.question[index];
-                  return SizedBox();
+                  return _buildQuestioncard(question, index);
                 },
               ),
             ),
@@ -222,4 +223,129 @@ class _QuizPlayScreenState extends State<QuizPlayScreen>
       ),
     );
   }
-} //heloo
+
+  Widget _buildQuestioncard(Question question, int index) {
+    return Container(
+      margin: EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.black12,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 10,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Question ${index + 1}',
+            style: TextStyle(fontSize: 16, color: AppTheme.textSecondaryColor),
+          ),
+          SizedBox(height: 8),
+          Text(
+            question.text,
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: AppTheme.textPrimaryColor,
+            ),
+          ),
+          SizedBox(height: 24),
+          ...question.options.asMap().entries.map(
+            (entry) {
+            final optionIndex = entry.key;
+            final option = entry.value;
+            final isSelected = _selectedanswers[index] == optionIndex;
+            final isCorrect =
+                _selectedanswers[index] == question.correctOptionIndex;
+
+            return Padding(
+              padding: EdgeInsets.symmetric(vertical: 8),
+              child: AnimatedContainer(
+                duration: Duration(microseconds: 300),
+                decoration: BoxDecoration(
+                  color:
+                      isSelected
+                          ? isCorrect
+                              ? AppTheme.secondaryColor.withOpacity(0.1)
+                              : Colors.redAccent.withOpacity(0.1)
+                          : Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color:
+                        isSelected
+                            ? isCorrect
+                                ? AppTheme.secondaryColor
+                                : Colors.redAccent
+                            : Colors.grey.shade300,
+                  ),
+                ),
+                child: ListTile(
+                  onTap:
+                      _selectedanswers[index] == null
+                          ? () => _selectedanswers(optionIndex)
+                          : null,
+                  title: Text(
+                    option,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color:
+                          isSelected
+                              ? isCorrect
+                                  ? AppTheme.secondaryColor
+                                  : Colors.redAccent
+                              : _selectedanswers[index] != null
+                              ? Colors.grey.shade500
+                              : AppTheme.textPrimaryColor,
+                    ),
+                  ),
+                  trailing:
+                      isSelected
+                          ? isCorrect
+                              ? Icon(
+                                Icons.check_circle_rounded,
+                                color: AppTheme.secondaryColor,
+                              )
+                              : Icon(Icons.close, 
+                              color: Colors.redAccent)
+                          : null,
+                ),
+              ),
+            )
+            .animate(delay: Duration(milliseconds: 300))
+            .slideX(begin: 0.5, end: 0, duration: Duration(microseconds: 300))
+            .fadeIn();
+          }),
+          Spacer(),
+          SizedBox(
+            width: double.infinity,
+            height: 55,
+            child: ElevatedButton(
+              onPressed: () {
+                _selectedanswers[index] != null ? _nextQuestion() : null;
+              },
+              child: Text(
+                index == widget.quiz.question.length - 1
+                    ? "Finish Quiz"
+                    : 'Next Question',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+    // .animate()
+    // .fadeIn(duration: Duration(milliseconds: 500))
+    // .slideY(begin: 0.1, end: 0);
+  }
+}
