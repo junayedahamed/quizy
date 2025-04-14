@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:quizy/src/model/question.dart';
 import 'package:quizy/src/model/quiz.dart';
+import 'package:quizy/src/theme/theme.dart';
 
 class QuizPlayScreen extends StatefulWidget {
   final Quiz quiz;
@@ -111,6 +113,113 @@ class _QuizPlayScreenState extends State<QuizPlayScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Scaffold(
+      backgroundColor: AppTheme.primaryColor,
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              margin: EdgeInsets.all(12),
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 10,
+                    offset: Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.close),
+                        color: AppTheme.textPrimaryColor,
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                      Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          SizedBox(
+                            height: 55,
+                            width: 55,
+                            child: CircularProgressIndicator(
+                              value:
+                                  (_remainingMin * 60 + _remainingSeconds) /
+                                  (_totalMiniutes * 60),
+                              strokeWidth: 5,
+                              backgroundColor: Colors.grey[300],
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                _getTimerColor(),
+                              ),
+                            ),
+                          ),
+                          Text(
+                            '$_remainingMin:${_remainingSeconds.toString().padLeft(2, '0')}',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: _getTimerColor(),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  TweenAnimationBuilder<double>(
+                    tween: Tween(
+                      begin: 0,
+                      end:
+                          (_currentQuestionIndex + 1) /
+                          widget.quiz.question.length,
+                    ),
+                    duration: Duration(milliseconds: 300),
+                    builder: (context, progress, child) {
+                      return LinearProgressIndicator(
+                        borderRadius: BorderRadius.horizontal(
+                          left: Radius.circular(10),
+                          right: Radius.circular(10),
+                        ),
+                        value: progress,
+                        backgroundColor: Colors.grey[300],
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          AppTheme.primaryColor,
+                        ),
+                        minHeight: 6,
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: PageView.builder(
+                controller: _pageController,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: widget.quiz.question.length,
+                onPageChanged: (index) {
+                  setState(() {
+                    _currentQuestionIndex = index;
+                  });
+                },
+                itemBuilder: (context, index) {
+                  final question = widget.quiz.question[index];
+                  return SizedBox();
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
