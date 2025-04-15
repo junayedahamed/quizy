@@ -256,71 +256,72 @@ class _QuizPlayScreenState extends State<QuizPlayScreen>
             ),
           ),
           SizedBox(height: 24),
-          ...question.options.asMap().entries.map(
-            (entry) {
+          ...question.options.asMap().entries.map((entry) {
             final optionIndex = entry.key;
             final option = entry.value;
             final isSelected = _selectedanswers[index] == optionIndex;
-            final isCorrect =
-                _selectedanswers[index] == question.correctOptionIndex;
+            final isCorrect = _selectedanswers[index] == question.correctIndex;
 
             return Padding(
-              padding: EdgeInsets.symmetric(vertical: 8),
-              child: AnimatedContainer(
-                duration: Duration(microseconds: 300),
-                decoration: BoxDecoration(
-                  color:
-                      isSelected
-                          ? isCorrect
-                              ? AppTheme.secondaryColor.withOpacity(0.1)
-                              : Colors.redAccent.withOpacity(0.1)
-                          : Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color:
-                        isSelected
-                            ? isCorrect
-                                ? AppTheme.secondaryColor
-                                : Colors.redAccent
-                            : Colors.grey.shade300,
-                  ),
-                ),
-                child: ListTile(
-                  onTap:
-                      _selectedanswers[index] == null
-                          ? () => _selectedanswers(optionIndex)
-                          : null,
-                  title: Text(
-                    option,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
+                  padding: EdgeInsets.symmetric(vertical: 8),
+                  child: AnimatedContainer(
+                    duration: Duration(microseconds: 300),
+                    decoration: BoxDecoration(
                       color:
                           isSelected
                               ? isCorrect
-                                  ? AppTheme.secondaryColor
-                                  : Colors.redAccent
-                              : _selectedanswers[index] != null
-                              ? Colors.grey.shade500
-                              : AppTheme.textPrimaryColor,
+                                  ? AppTheme.secondaryColor.withAlpha(100)
+                                  : Colors.redAccent.withAlpha(100)
+                              : Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color:
+                            isSelected
+                                ? isCorrect
+                                    ? AppTheme.secondaryColor
+                                    : Colors.redAccent
+                                : Colors.grey.shade300,
+                      ),
+                    ),
+                    child: ListTile(
+                      onTap:
+                          _selectedanswers[index] == null
+                              ? () => _selectedans(optionIndex)
+                              : null,
+                      title: Text(
+                        option,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color:
+                              isSelected
+                                  ? isCorrect
+                                      ? AppTheme.secondaryColor
+                                      : Colors.redAccent
+                                  : _selectedanswers[index] != null
+                                  ? Colors.grey.shade500
+                                  : AppTheme.textPrimaryColor,
+                        ),
+                      ),
+                      trailing:
+                          isSelected
+                              ? isCorrect
+                                  ? Icon(
+                                    Icons.check_circle_rounded,
+                                    color: AppTheme.secondaryColor,
+                                  )
+                                  : Icon(Icons.close, color: Colors.redAccent)
+                              : null,
                     ),
                   ),
-                  trailing:
-                      isSelected
-                          ? isCorrect
-                              ? Icon(
-                                Icons.check_circle_rounded,
-                                color: AppTheme.secondaryColor,
-                              )
-                              : Icon(Icons.close, 
-                              color: Colors.redAccent)
-                          : null,
-                ),
-              ),
-            )
-            .animate(delay: Duration(milliseconds: 300))
-            .slideX(begin: 0.5, end: 0, duration: Duration(microseconds: 300))
-            .fadeIn();
+                )
+                .animate(delay: Duration(milliseconds: 300))
+                .slideX(
+                  begin: 0.5,
+                  end: 0,
+                  duration: Duration(microseconds: 300),
+                )
+                .fadeIn();
           }),
           Spacer(),
           SizedBox(
