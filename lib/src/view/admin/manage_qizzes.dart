@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:quizy/src/model/category.dart';
 import 'package:quizy/src/model/quiz.dart';
 import 'package:quizy/src/theme/theme.dart';
-import 'package:quizy/src/view/admin/add_category_screen.dart';
 import 'package:quizy/src/view/admin/add_quiz_screen.dart';
 import 'package:quizy/src/view/admin/edit_quiz_screen.dart';
 
@@ -183,7 +182,6 @@ class _ManageQizzesState extends State<ManageQizzes> {
                     ),
                   ],
                   onChanged: (value) {
-                    print(value);
                     setState(() {
                       _selectedCategoryId = value;
                     });

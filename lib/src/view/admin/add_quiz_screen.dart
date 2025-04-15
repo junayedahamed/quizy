@@ -336,6 +336,7 @@ class _AddQuizQuestionState extends State<AddQuizScreen> {
                                   if (value == null || value.isEmpty) {
                                     return 'Enter valid Question';
                                   }
+                                  return null;
                                 },
                               ),
 

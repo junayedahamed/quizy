@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:quizy/src/model/question.dart';
 import 'package:quizy/src/model/quiz.dart';
 import 'package:quizy/src/theme/theme.dart';
+import 'package:quizy/src/view/user/widgets/quiz_result_screen.dart';
 
 class QuizPlayScreen extends StatefulWidget {
   final Quiz quiz;
@@ -76,7 +78,18 @@ class _QuizPlayScreenState extends State<QuizPlayScreen>
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text("Quiz Completed")));
-    // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => QuizResultScreen(quiz:widget.quiz,totalQuestion:widget.quiz.question.length,correctAnswer:correctAnswers,selectedAnswer:_selectedanswers),))
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder:
+            (context) => QuizResultScreen(
+              quiz: widget.quiz,
+              totalQuestion: widget.quiz.question.length,
+              correctAnswer: correctAnswers,
+              selectedAnswer: _selectedanswers,
+            ),
+      ),
+    );
   }
 
   int _calculateScore() {
@@ -88,6 +101,7 @@ class _QuizPlayScreenState extends State<QuizPlayScreen>
         correctAnswer++;
       }
     }
+    log(correctAnswer.toString());
     return correctAnswer;
   }
 
