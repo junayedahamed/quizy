@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quizy/src/model/quiz.dart';
+import 'package:quizy/src/view/user/home_screen.dart';
 
 class QuizResultScreen extends StatelessWidget {
   final Quiz quiz;
@@ -17,6 +18,27 @@ class QuizResultScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: Center(child: Text("$totalQuestion/$correctAnswer")));
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        body: Center(
+          child: Column(
+            children: [
+              SizedBox(height: 250),
+              Center(child: Text("$totalQuestion/$correctAnswer")),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomeScreen()),
+                  );
+                },
+                child: Text("Go Back", style: TextStyle(color: Colors.white)),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
