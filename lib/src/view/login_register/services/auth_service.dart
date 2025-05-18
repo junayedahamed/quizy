@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -10,11 +12,12 @@ class AuthService with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
 
-  Future<String> signUp(
+  Future<void> signUp(
     String email,
     String pass,
     String role,
     String name,
+    context,
   ) async {
     try {
       UserCredential res = await _auth.createUserWithEmailAndPassword(
@@ -26,8 +29,20 @@ class AuthService with ChangeNotifier {
         'name': name,
         'role': role,
       });
-
-      return 'success';
+      Fluttertoast.showToast(
+        msg: 'Account created successfully',
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.SNACKBAR,
+        backgroundColor: Colors.black54,
+        textColor: Colors.white,
+        fontSize: 14,
+      );
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginPage()),
+      );
+      log('here');
+      // return 'success';
     } on FirebaseAuthException catch (e) {
       String message = '';
       if (e.code == 'weak-password') {
@@ -46,7 +61,8 @@ class AuthService with ChangeNotifier {
         textColor: Colors.white,
         fontSize: 14,
       );
-      return 'exception';
+      // log("here2");
+      // return 'exception';
     }
   }
 

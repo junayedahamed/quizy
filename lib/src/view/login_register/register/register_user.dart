@@ -229,27 +229,25 @@ class _RegisterPageState extends State<RegisterPage> {
                       onpress: () {
                         bool info = formkey.currentState!.validate();
                         if (info) {
-                          final val = _authService.signUp(
+                          _authService.signUp(
                             email.text,
                             pass.text,
                             role.text,
                             uname.text,
+                            context,
                           );
 
-                          String status = '';
-                          val.then((onValue) {
-                            setState(() {
-                              status = onValue;
-                            });
-                          });
-                          if (status == 'success') {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => LoginPage(),
-                              ),
-                            );
-                          }
+                          // String status = '';
+                          // val.then((onValue) {
+                          //   setState(() {
+                          //     status = onValue;
+                          //   });
+
+                          //   log(status);
+                          // // });
+                          // if (status == 'success') {
+
+                          // }
                         }
 
                         //  else {

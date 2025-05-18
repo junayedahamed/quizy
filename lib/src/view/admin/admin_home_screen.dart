@@ -23,7 +23,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
 
     final latestQuizez =
         await _firebaseFirestore
-            .collection('c')
+            .collection('categires')
             .orderBy('createdAt', descending: true)
             .limit(5)
             .get();

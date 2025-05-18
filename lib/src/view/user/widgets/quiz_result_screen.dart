@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quizy/src/model/quiz.dart';
+import 'package:quizy/src/theme/theme.dart';
 import 'package:quizy/src/view/user/home_screen.dart';
 
 class QuizResultScreen extends StatelessWidget {
@@ -25,7 +26,24 @@ class QuizResultScreen extends StatelessWidget {
           child: Column(
             children: [
               SizedBox(height: 250),
-              Center(child: Text("$totalQuestion/$correctAnswer")),
+              Text(
+                "Your result",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 50,
+                  color: AppTheme.textPrimaryColor,
+                ),
+              ),
+              Center(
+                child: Text(
+                  "$correctAnswer/$totalQuestion",
+                  style: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.w700,
+                    color: AppTheme.secondaryColor,
+                  ),
+                ),
+              ),
               ElevatedButton(
                 onPressed: () {
                   Navigator.push(

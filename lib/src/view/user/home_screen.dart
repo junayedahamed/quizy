@@ -92,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ],
                 automaticallyImplyLeading: false,
-                expandedHeight: 238,
+                expandedHeight: 280,
                 pinned: true,
                 floating: true,
                 centerTitle: false,
